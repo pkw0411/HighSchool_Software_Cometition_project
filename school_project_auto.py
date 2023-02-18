@@ -178,7 +178,7 @@ now_frame = 0
 record_list = []
 
 # 게임 기록
-record = {'between': 0, 'fps': 0,'winner':{}, 'loser': {}}
+record = {'fps': 0, 'winner':{} }
 
 # 파일위치 반환
 
@@ -214,26 +214,15 @@ if os.path.isfile(os.path.join(current_path, 'play_record_2.csv')):
     # 플레이 정보중 이긴 플레이만 따로 저장
     for i in p2_event_list:
         
-        b = i[2]
+        b = i[1]
         p2_event.append(eval(b))
-    
-    print(str(p2_event))
-
-    #피클에 옮기기
-    with open(os.path.join(current_path,'play_record_2.txt'),'wb') as fw:
-        pickle.dump(p2_event,fw)
 
 
 # AI가 움직일 행동 정보 리스트
 AI_list = []
-
-if os.path.isfile(os.path.join(current_path,'play_record_2.txt')):
-    with open(os.path.join(current_path,'play_record_2.txt'),"rb") as fr:
-        AI_list = pickle.load(fr)
-
+AI_list = p2_event
 AI_len = len(AI_list)
 
-k=0
 
 
 
@@ -309,12 +298,12 @@ while running:
 
     # player2 AI, 움직임 조건
 
-    if k< AI_len:
-        player2_event = AI_list[k]
+    if now_frame< AI_len:
+        player2_event = AI_list[now_frame]
 
 
 
-    if k>=AI_len:
+    if now_frame>=AI_len:
         player2_event ={'to_en':False, 'against_en': False, 'jump':False, 'attack': False, 'shield': False}
         movement_p2=randint(0,999)
 
@@ -533,10 +522,9 @@ while running:
     
     #프레임 진행
     now_frame += 1
-    k+=1
 
     # 거리기록, 프레임 기록
-    record['between'] = int(abs(p1_x_pos -p2_x_pos))
+    #record['between'] = int(abs(p1_x_pos -p2_x_pos))
     record['fps'] = int(now_frame)
 
     # 리스트에 저장
@@ -569,12 +557,10 @@ f=0
 if ending_txt == "Red Win":
     for i in record_list:
         i['winner'] = dict(play_p1[f])
-        i['loser'] = dict(play_p2[f])
         f+=1
 if ending_txt == "Blue Win":
     for i in record_list:
         i['winner'] = dict(play_p2[f])
-        i['loser'] = dict(play_p1[f])
         f+=1
 
 
@@ -601,7 +587,7 @@ if os.path.isfile(os.path.join(current_path,'game_record_1.txt')):
     with open(os.path.join(current_path,'game_record_1.txt'), 'wb') as f:
         pickle.dump(data, f)
     f = open(os.path.join(current_path,'game_record_2.txt'),'w',encoding='utf8')
-    sen = str(str(data)+', '+'파란색 승률 : '+str(int(data['BLUE']/(data['BLUE']+data['RED'])*100))+'%')
+    sen = str(str(data)+', '+'파란색(나의 인공지능) 승률 : '+str(int(data['BLUE']/(data['BLUE']+data['RED'])*100))+'%')
     f.write(sen)
     f.close()
 else:
@@ -612,7 +598,7 @@ else:
     with open(os.path.join(current_path,'game_record_1.txt'), 'wb') as f:
         pickle.dump(data, f)
     f = open(os.path.join(current_path,'game_record_2.txt'),'w',encoding='utf8')
-    sen = str(str(data)+', '+'파란색 승률 : '+str(int(data['BLUE']/(data['BLUE']+data['RED'])*100))+'%')
+    sen = str(str(data)+', '+'파란색(나의 인공지능) 승률 : '+str(int(data['BLUE']/(data['BLUE']+data['RED'])*100))+'%')
     f.write(sen)
     f.close()
 

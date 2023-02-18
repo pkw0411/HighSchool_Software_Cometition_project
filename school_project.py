@@ -60,14 +60,12 @@ if os.path.isfile(current_path+'\\play_record.csv'):
     # 플레이 정보중 이긴 플레이만 따로 저장
     for i in Action_list:
         
-        Action_list= i[2]
+        Action_list= i[1]
         Fixed_Action_list.append(eval(Action_list))
     
     print(str(Fixed_Action_list))
 
-    #피클에 옮기기
-    with open(current_path+'\\play_record.txt','wb') as fw:
-        pickle.dump(Fixed_Action_list,fw)
+
 
 
 # 파일이 없을때
@@ -221,18 +219,16 @@ now_frame = 0
 record_list = []
 
 # 게임 기록
-record = {'between': 0, 'fps': 0,'winner':{}, 'loser': {}}
+record = {'fps': 0,'winner':{} }
 
 # AI가 움직일 행동 정보 리스트
 AI_list = []
 
-if os.path.isfile(os.path.join(current_path,'play_record.txt')):
-    with open(os.path.join(current_path,'play_record.txt'),"rb") as fr:
-        AI_list = pickle.load(fr)
+AI_list = Fixed_Action_list
 
 AI_len = len(AI_list)
 
-k=0
+
 
 # 게임 진행
 running = True
@@ -305,12 +301,12 @@ while running:
 
     # player2 AI, 움직임 조건
 
-    if k< AI_len:
-        player2_event = AI_list[k]
+    if now_frame< AI_len:
+        player2_event = AI_list[now_frame]
 
 
 
-    if k>=AI_len:
+    if now_frame>=AI_len:
         player2_event ={'to_en':False, 'against_en': False, 'jump':False, 'attack': False, 'shield': False}
         movement_p2=randint(0,999)
 
@@ -532,10 +528,9 @@ while running:
     
     #프레임 진행
     now_frame += 1
-    k+=1
 
     # 거리기록, 프레임 기록
-    record['between'] = int(abs(p1_x_pos -p2_x_pos))
+    #record['between'] = int(abs(p1_x_pos -p2_x_pos))
     record['fps'] = int(now_frame)
 
     # 리스트에 저장
@@ -568,12 +563,12 @@ f=0
 if ending_txt == "Red Win":
     for i in record_list:
         i['winner'] = dict(play_p1[f])
-        i['loser'] = dict(play_p2[f])
+        #i['loser'] = dict(play_p2[f])
         f+=1
 if ending_txt == "Blue Win":
     for i in record_list:
         i['winner'] = dict(play_p2[f])
-        i['loser'] = dict(play_p1[f])
+        #i['loser'] = dict(play_p1[f])
         f+=1
 
 
